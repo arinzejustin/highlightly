@@ -66,7 +66,7 @@ Simple. Seamless. Super fast.
 
 ## 📜 Permissions
 
-LexiSight only requests:  
+**Highlight** only requests:  
 
 - **activeTab** — to read highlighted text  
 - **storage** — to store vocabulary data locally  
