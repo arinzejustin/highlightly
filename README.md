@@ -77,7 +77,7 @@ No extra permissions. No tracking. No analytics.
 
 ## 🏷️ License
 
-Licensed under the MIT License.
+Licensed under the Apache License.
 
 ---
 
