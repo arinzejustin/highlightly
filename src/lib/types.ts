@@ -10,8 +10,9 @@ export interface SavedWord {
 }
 
 export interface AuthData {
-  token: string;
+  authToken: string;
   userId: string;
+  user: User | null;
 }
 
 export interface SyncResponse {
@@ -29,4 +30,29 @@ export interface highlight extends DBSchema {
       "by-synced": number;
     };
   };
+}
+
+export interface User {
+  userId: string;
+  email: string;
+  plan: "free" | "premium";
+  expiryDate: Date;
+  username: string;
+  createdAt: string;
+  status: "active" | "suspended" | "deleted";
+}
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  userId: string | null;
+  authToken: string | null;
+  hasCompletedOnboarding: boolean;
+  user: User | null;
+}
+
+export interface LogoutReason {
+  MANUAL: string;
+  INVALID_USER_DATA: string;
+  FETCH_USER_FAILED: string;
+  INVALID_USER_STRUCTURE: string;
 }

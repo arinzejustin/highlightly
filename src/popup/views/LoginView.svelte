@@ -53,7 +53,7 @@
                     type="email"
                     bind:value={email}
                     placeholder="you@example.com"
-                    class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                    class="w-full px-3 py-2.5 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     disabled={isLoading}
                 />
             </div>
@@ -67,7 +67,7 @@
                     type="password"
                     bind:value={password}
                     placeholder="*************"
-                    class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                    class="w-full px-3 py-2.5 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     disabled={isLoading}
                 />
             </div>
@@ -79,7 +79,7 @@
             <button
                 type="submit"
                 disabled={isLoading}
-                class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                class="w-full px-3 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
                 {#if isLoading}
                     <div class="flex items-center justify-center h-full">

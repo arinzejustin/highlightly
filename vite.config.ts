@@ -4,9 +4,6 @@ import { resolve } from "path";
 
 export default defineConfig({
   plugins: [svelte()],
-  server: {
-    port: 3000, // or any port you prefer
-  },
   resolve: {
     alias: {
       $lib: resolve(__dirname, "./src/lib"),

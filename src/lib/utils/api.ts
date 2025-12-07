@@ -1,4 +1,4 @@
-import type { SavedWord } from "$lib/types";
+import type { SavedWord, User } from "$lib/types";
 
 const API_BASE_URL = "https://api.yourapp.com";
 
@@ -23,7 +23,7 @@ export async function fetchMeaning(word: string): Promise<string> {
 export async function loginUser(
   email: string,
   password: string,
-): Promise<{ token: string; userId: string } | null> {
+): Promise<{ token: string; userId: string; user: User } | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -41,6 +41,7 @@ export async function loginUser(
     return {
       token: data.token,
       userId: data.userId,
+      user: data.user,
     };
   } catch (error) {
     console.error("Login error:", error);
@@ -90,5 +91,25 @@ export async function fetchUserWords(token: string): Promise<SavedWord[]> {
   } catch (error) {
     console.error("Error fetching words:", error);
     return [];
+  }
+}
+
+export async function getUserById(userId: string, token: string): Promise<User | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user");
+    }
+
+    const data = await response.json();
+    return data.user || null;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return null;
   }
 }

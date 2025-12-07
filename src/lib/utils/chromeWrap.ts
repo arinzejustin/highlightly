@@ -102,7 +102,7 @@ export function Notification(message: string): void {
     chrome.notifications.create(
       {
         type: "basic",
-        iconUrl: chrome.runtime.getURL("icon.png"), // recommended way to reference extension files
+        iconUrl: chrome.runtime.getURL("icon.png"),
         title: "Highlight Notification",
         message: message,
       },
@@ -118,4 +118,15 @@ export function Notification(message: string): void {
       },
     );
   });
+}
+
+export async function chromeBroadcast(message: any) {
+  try {
+    const tabs = await chrome.tabs.query({});
+    for (const tab of tabs) {
+      tab.id && chrome.tabs.sendMessage(tab.id, message).catch(() => {});
+    }
+  } catch (e) {
+    console.error("[Broadcast error]", e);
+  }
 }
