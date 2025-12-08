@@ -9,14 +9,15 @@
         showAccount = false,
         user = null,
         loggedIn = false,
+        allowList = false,
         onSignIn = () => {},
     } = $props<{
         showAccount?: boolean;
         user?: User | null;
+        allowList: boolean;
         loggedIn?: boolean;
         onSignIn?: () => void;
     }>();
-    let allowList = $state(false);
     let hostname = $state("");
 
     // let isActivated = $derived($activationStore.isActivated);
@@ -125,7 +126,9 @@
         <div></div>
     {:else}
         <div class="relative">
-            <div class="my-3 flex w-full items-center gap-x-2 pb-2">
+            <div
+                class="my-3 flex w-full items-center gap-x-2 pb-2 justify-center"
+            >
                 <p class="text-lg">{hostname}</p>
                 <Tooltip.Provider>
                     <Tooltip.Root>
@@ -133,7 +136,7 @@
                             <button
                                 aria-label="Edit Allow List"
                                 onclick={() => (allowList = true)}
-                                class="flex items-center"
+                                class="flex items-center cursor-pointer"
                             >
                                 <ListFilterPlus class="size-4" />
                             </button>
@@ -161,8 +164,8 @@
                             >
                                 <svg
                                     class="w-20 h-20 transition-all transform duration-700 ease-in-out {isActivated
-                                        ? 'fill-green-500 dark:fill-green-400'
-                                        : 'fill-destructive rotate-180'}"
+                                        ? 'fill-green-500 dark:fill-green-300'
+                                        : 'fill-destructive -rotate-180'}"
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="36"
                                     height="36"
@@ -200,13 +203,13 @@
                     class="grid grid-cols-3 gap-x-4 items-center align-middle justify-between"
                 >
                     <div
-                        class="border rounded-lg p-2 bg-secondary card cursor-pointer"
+                        class="border rounded-lg min-h-24 p-2 card cursor-pointer hover:shadow-md transition-all duration-700"
                     ></div>
                     <div
-                        class="border rounded-lg p-2 bg-secondary card cursor-pointer"
+                        class="border rounded-lg min-h-24 p-2 card cursor-pointer hover:shadow-md transition-all duration-700"
                     ></div>
                     <div
-                        class="border rounded-lg p-2 bg-secondary card cursor-pointer"
+                        class="border rounded-lg min-h-24 p-2 card cursor-pointer hover:shadow-md transition-all duration-700"
                     ></div>
                 </div>
             </div>

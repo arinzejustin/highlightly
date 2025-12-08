@@ -145,15 +145,15 @@
 
 @layer components {
     .icons {
-        @apply border border-border rounded-full cursor-pointer p-2 bg-card transition-all duration-500 ease-in-out;
+        @apply border border-border rounded-full cursor-pointer p-2 bg-card transition-all duration-500 ease-in-out hover:bg-secondary!;
     }
 
     .font-extension {
         font-family: "highlight-font", sans-serif;
     }
 
-    .card:hover {
-        @apply bg-card;
+    .card {
+        @apply hover:bg-card! bg-primary-foreground;
     }
 }
 

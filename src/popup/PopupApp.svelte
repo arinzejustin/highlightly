@@ -24,6 +24,7 @@
         $state("dashboard");
     let isLoading = $state(false);
     let showAccount = $state(false);
+    let allowList = $state(false);
     let loggedIn = $derived($authStore.isAuthenticated);
     let user = $derived($authStore.user);
 
@@ -63,9 +64,15 @@
 </script>
 
 <div class="w-full h-full bg-background text-foreground px-1">
-    {#if showAccount}
+    {#if showAccount || allowList}
         <div class="flex justify-between align-middle items-center py-4">
-            <button class="icons" onclick={() => (showAccount = false)}>
+            <button
+                class="icons"
+                onclick={() => {
+                    showAccount = false;
+                    allowList = false;
+                }}
+            >
                 <ChevronLeft class="size-5" />
             </button>
             <div></div>
@@ -150,12 +157,15 @@
             {showAccount}
             {loggedIn}
             {user}
+            {allowList}
             onSignIn={() => {
                 currentView = "login";
             }}
         />
     {/if}
-    <div class="flex flex-row justify-between items-center mt-4 mb-1 w-full">
+    <div
+        class="flex flex-row justify-between items-center mt-4 pt-4 mb-1 w-full"
+    >
         <div class="flex flex-row gap-6 gap-x-3 items-center">
             <Tooltip.Provider>
                 <Tooltip.Root>
