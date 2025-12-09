@@ -1,4 +1,4 @@
-import type { SavedWord, User } from "$lib/types";
+import type { SavedWord, User, AuthData } from "$lib/types";
 
 const API_BASE_URL = "https://api.yourapp.com";
 
@@ -111,5 +111,38 @@ export async function getUserById(userId: string, token: string): Promise<User |
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;
+  }
+}
+
+export async function syncUser(
+  authData: AuthData
+): Promise<boolean> {
+  try {
+    if (!authData.user?.userId) {
+      console.log("[Highlight UserSync] No userId to sync");
+      return false;
+    }
+
+    const response = await fetch(
+      `${API_BASE_URL}/users/${authData.user.userId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${authData.authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(authData.user),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    console.log("[Highlight UserSync] Successfully synced user to backend");
+    return true;
+  } catch (error) {
+    console.error("[Highlight UserSync] Sync failed:", error);
+    return false;
   }
 }

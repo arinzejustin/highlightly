@@ -27,6 +27,7 @@
     let allowList = $state(false);
     let loggedIn = $derived($authStore.isAuthenticated);
     let user = $derived($authStore.user);
+    let unsyncLength = $state(0);
 
     const triggerSync = () => {
         currentView = loggedIn ? "syncing" : "login";
@@ -47,6 +48,8 @@
         // }
 
         isLoading = false;
+
+        unsyncLength = (await wordsStore.unsyncLength()) || 0;
     });
 
     function handleLoginSuccess() {
@@ -71,6 +74,7 @@
                 onclick={() => {
                     showAccount = false;
                     allowList = false;
+                    currentView = "dashboard";
                 }}
             >
                 <ChevronLeft class="size-5" />
@@ -110,7 +114,10 @@
                     <DropdownMenu.Item>
                         <a href="https://highlight." target="_blank">Support</a>
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item>
+                    <DropdownMenu.Item
+                        class="cursor-pointer"
+                        onclick={() => (allowList = true)}
+                    >
                         <span>Allow list</span>
                         <DropdownMenu.Shortcut class="text-amber-600">
                             <LockKeyhole class="size-3 text-amber-600" />
@@ -161,6 +168,9 @@
             onSignIn={() => {
                 currentView = "login";
             }}
+            openList={() => {
+                allowList = true;
+            }}
         />
     {/if}
     <div
@@ -200,7 +210,16 @@
             <Tooltip.Provider>
                 <Tooltip.Root>
                     <Tooltip.Trigger>
-                        <button onclick={() => triggerSync()} class="icons">
+                        <button
+                            onclick={() => triggerSync()}
+                            class="icons relative"
+                        >
+                            <!-- {#if unsyncLength > 0 } -->
+                            <span
+                                class="absolute -top-2.5 -right-3.5 z-1000 rounded-full p-1 px-2 bg-destructive text-white text-xs"
+                                >{unsyncLength}</span
+                            >
+                            <!-- {/if} -->
                             <RefreshCcw class="size-4" />
                         </button>
                     </Tooltip.Trigger>

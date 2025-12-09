@@ -77,3 +77,8 @@ export async function clearAllWords(): Promise<void> {
   const db = await getDB();
   await db.clear("words");
 }
+
+export async function getUnsyncLength(): Promise<number> {
+  const words = await getUnsyncedWords();
+  return words.length || 0;
+}

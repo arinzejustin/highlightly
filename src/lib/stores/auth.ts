@@ -10,10 +10,6 @@ import {
 import { loginUser, getUserById } from "$lib/utils/api";
 import type { User, LogoutReason, AuthState } from "$lib/types";
 
-// ============================================================================
-// Constants
-// ============================================================================
-
 const STORAGE_KEYS = {
   AUTH_TOKEN: "authToken",
   USER_ID: "userId",
@@ -32,13 +28,7 @@ const BROADCAST_EVENTS = {
   LOGGED_OUT: "USER_LOGGED_OUT",
 } as const;
 
-// ============================================================================
-// Helper Functions
-// ============================================================================
 
-/**
- * Validates if the provided object is a valid User type
- */
 function isValidUser(user: unknown): user is User {
   return (
     user !== null &&
@@ -49,9 +39,7 @@ function isValidUser(user: unknown): user is User {
   );
 }
 
-/**
- * Creates the initial auth state
- */
+
 function createInitialState(): AuthState {
   return {
     isAuthenticated: false,
@@ -62,16 +50,9 @@ function createInitialState(): AuthState {
   };
 }
 
-// ============================================================================
-// Auth Store Factory
-// ============================================================================
-
 function createAuthStore() {
   const { subscribe, set, update } = writable<AuthState>(createInitialState());
 
-  /**
-   * Performs logout operation and cleans up storage
-   */
   async function performLogout(
     reason: string = LOGOUT_REASONS.MANUAL,
   ): Promise<void> {
@@ -93,14 +74,9 @@ function createAuthStore() {
       Notification(reason);
     } catch (error) {
       console.error("Error during logout:", error);
-      // Still show notification even if storage cleanup fails
-      Notification(reason);
     }
   }
 
-  /**
-   * Fetches and validates user data from the API
-   */
   async function fetchAndValidateUser(
     userId: string,
     authToken: string,
@@ -122,9 +98,7 @@ function createAuthStore() {
     }
   }
 
-  /**
-   * Updates the auth state with validated data
-   */
+
   async function updateAuthState(
     authToken: string,
     userId: string,
@@ -152,9 +126,7 @@ function createAuthStore() {
   return {
     subscribe,
 
-    /**
-     * Initializes the auth store from storage
-     */
+
     async init(): Promise<void> {
       try {
         const data = await getChromeStorage<{
@@ -164,13 +136,11 @@ function createAuthStore() {
           user?: User;
         }>(Object.values(STORAGE_KEYS));
 
-        // No stored credentials found
         if (!data.authToken || !data.userId) {
           set(createInitialState());
           return;
         }
 
-        // Valid user data exists in storage
         if (data.user && isValidUser(data.user)) {
           set({
             isAuthenticated: true,
@@ -182,7 +152,6 @@ function createAuthStore() {
           return;
         }
 
-        // Fetch user data from API
         const user = await fetchAndValidateUser(data.userId, data.authToken);
 
         if (user) {
@@ -199,9 +168,6 @@ function createAuthStore() {
       }
     },
 
-    /**
-     * Authenticates user with email and password
-     */
     async login(email: string, password: string): Promise<boolean> {
       try {
         const result = await loginUser(email, password);
@@ -270,9 +236,6 @@ function createAuthStore() {
       }
     },
 
-    /**
-     * Updates the current user data
-     */
     setUser(user: User): void {
       if (!isValidUser(user)) {
         console.error("Invalid user data provided to setUser");
@@ -286,13 +249,8 @@ function createAuthStore() {
   };
 }
 
-// ============================================================================
-// Export
-// ============================================================================
-
 export const authStore = createAuthStore();
 
-// Initialize the auth store on module load
 authStore.init().catch((error) => {
   console.error("Critical: Failed to initialize auth store:", error);
 });

@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { getAllWords, deleteWord } from "$lib/utils/idb";
+import { getAllWords, deleteWord, getUnsyncLength } from "$lib/utils/idb";
 import { Notification } from "$lib/utils/chromeWrap";
 import type { SavedWord } from "$lib/types";
 
@@ -46,6 +46,10 @@ function createWordsStore() {
         words.map((w) => (w.id === id ? { ...w, ...updates } : w)),
       );
     },
+
+    async unsyncLength() {
+      return await getUnsyncLength();
+    }
   };
 }
 

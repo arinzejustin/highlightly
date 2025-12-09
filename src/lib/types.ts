@@ -10,8 +10,8 @@ export interface SavedWord {
 }
 
 export interface AuthData {
-  authToken: string;
-  userId: string;
+  authToken: string | null;
+  userId: string | null;
   user: User | null;
 }
 
@@ -40,14 +40,14 @@ export interface User {
   username: string;
   createdAt: string;
   status: "active" | "suspended" | "deleted";
+  allowedList?: string[],
+  extensionMode?: boolean;
+  requestCount?: string;
 }
 
-export interface AuthState {
+export interface AuthState extends AuthData {
   isAuthenticated: boolean;
-  userId: string | null;
-  authToken: string | null;
   hasCompletedOnboarding: boolean;
-  user: User | null;
 }
 
 export interface LogoutReason {
@@ -55,4 +55,9 @@ export interface LogoutReason {
   INVALID_USER_DATA: string;
   FETCH_USER_FAILED: string;
   INVALID_USER_STRUCTURE: string;
+}
+
+export interface ActivationState {
+  isActivated: boolean;
+  user?: User;
 }

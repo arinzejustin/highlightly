@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { ListFilterPlus } from "@lucide/svelte";
+    import { ListFilterPlus, OctagonAlert } from "@lucide/svelte";
     import { activationStore } from "$lib/stores/activation";
     import * as Tooltip from "$lib/components/ui/tooltip/index.js";
     import type { User } from "$lib/types";
@@ -11,12 +11,14 @@
         loggedIn = false,
         allowList = false,
         onSignIn = () => {},
+        openList = () => {},
     } = $props<{
         showAccount?: boolean;
         user?: User | null;
         allowList: boolean;
         loggedIn?: boolean;
         onSignIn?: () => void;
+        openList?: () => void;
     }>();
     let hostname = $state("");
 
@@ -123,7 +125,25 @@
             </div>
         {/if}
     {:else if allowList}
-        <div></div>
+        <div class="relative my-3 pb-2 mt-1">
+            {#if !user}
+                <div
+                    class="rounded-lg shadow-sm hover:shadow-md border border-yellow-400 bg-yellow-200 py-1 px-2"
+                >
+                    <p
+                        class="text-yellow-600 text-base inline-flex items-center"
+                    >
+                        <OctagonAlert class="text-yellow-500 size-4 mr-2" />
+                        This feature is for subscribers.
+                        <a
+                            href="https://"
+                            target="_blank"
+                            class="text-blue-400 underline ml-2">Join Now</a
+                        >
+                    </p>
+                </div>
+            {/if}
+        </div>
     {:else}
         <div class="relative">
             <div
@@ -135,7 +155,7 @@
                         <Tooltip.Trigger>
                             <button
                                 aria-label="Edit Allow List"
-                                onclick={() => (allowList = true)}
+                                onclick={() => openList()}
                                 class="flex items-center cursor-pointer"
                             >
                                 <ListFilterPlus class="size-4" />
@@ -190,15 +210,11 @@
                         </Tooltip.Content>
                     </Tooltip.Root>
                 </Tooltip.Provider>
-                <p
-                    class="text-lg font-bold text-foreground {isActivated
-                        ? ''
-                        : 'text-opacity-60'}"
-                >
+                <p class="text-sm font-bold text-gray-400 dark:text-gray-500">
                     {isActivated ? "Activated" : "Deactivated"}
                 </p>
             </div>
-            <div class="my-4">
+            <div class="my-4 pt-3">
                 <div
                     class="grid grid-cols-3 gap-x-4 items-center align-middle justify-between"
                 >
