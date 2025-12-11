@@ -1,4 +1,5 @@
-import { syncWords, getUserById, syncUser } from "$lib/utils/api";
+
+import { syncWords, getUserById, syncUser, InitDeviceId } from "$lib/utils/api";
 import { getAllWords, markWordAsSynced } from "$lib/utils/idb";
 import {
   getChromeStorage,
@@ -9,7 +10,8 @@ import {
   chromeBroadcast,
   Notification,
 } from "$lib/utils/chromeWrap";
-import type { User, AuthData } from "$lib/types";
+import { getDeviceInfo } from "$lib/utils/Device";
+import type { User, AuthData, DeviceInfo } from "$lib/types";
 
 interface SyncState {
   lastSyncTime?: number;
@@ -24,6 +26,7 @@ const STORAGE_KEYS = {
   USER_ID: "userId",
   USER: "user",
   ONBOARDING: "hasCompletedOnboarding",
+  DEVICE_ID: 'deviceId'
 } as const;
 
 const LOCAL_STORAGE_KEYS = {
@@ -153,6 +156,33 @@ function clearAllIntervals(): void {
   if (userCheckIntervalId !== null) {
     clearInterval(userCheckIntervalId);
     userCheckIntervalId = null;
+  }
+}
+
+async function registerDeviceIfNeeded(): Promise<void> {
+  const storedData = await getChromeStorage<{ deviceId?: string }>(
+    [STORAGE_KEYS.DEVICE_ID],
+  );
+
+  if (storedData.deviceId) {
+    console.log("[Highlight Device] Device already registered");
+    return;
+  }
+
+  const deviceInfo: Omit<DeviceInfo, "deviceId"> = getDeviceInfo();
+
+  try {
+    const deviceId = await InitDeviceId(deviceInfo);
+
+    if (!deviceId) {
+      throw new Error("Failed to initialize device ID");
+    }
+
+    await setChromeStorage({
+      [STORAGE_KEYS.DEVICE_ID]: deviceId,
+    });
+  } catch (error) {
+    console.error("[Highlight Device] Registration failed:", error);
   }
 }
 
@@ -415,11 +445,17 @@ function scheduleTasks(): void {
 
 chrome.runtime.onInstalled.addListener((details) => {
   console.log(`[Highlight Lifecycle] Extension ${details.reason}`);
+  registerDeviceIfNeeded().catch((error) => {
+    console.error("[Highlight Device] Registration on install failed:", error);
+  });
   scheduleTasks();
 });
 
 chrome.runtime.onStartup.addListener(() => {
   console.log("[Highlight Lifecycle] Browser started");
+  registerDeviceIfNeeded().catch((error) => {
+    console.error("[Highlight Device] Registration on startup failed:", error);
+  });
   scheduleTasks();
 });
 

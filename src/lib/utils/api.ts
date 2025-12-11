@@ -1,4 +1,4 @@
-import type { SavedWord, User, AuthData } from "$lib/types";
+import type { SavedWord, User, AuthData, DeviceInfo } from "$lib/types";
 
 const API_BASE_URL = "https://api.yourapp.com";
 
@@ -144,5 +144,60 @@ export async function syncUser(
   } catch (error) {
     console.error("[Highlight UserSync] Sync failed:", error);
     return false;
+  }
+}
+
+export async function registerDevice(
+  userId: string,
+  deviceInfo: DeviceInfo,
+  token: string,
+): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/devices/${userId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "Device-ID": deviceInfo.deviceId,
+      },
+      body: JSON.stringify(deviceInfo),
+    });
+
+    if (!response.ok) {
+      throw new Error("Device registration failed");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Device registration error:", error);
+    return false;
+  }
+}
+
+export async function InitDeviceId(deviceInfo: Omit<DeviceInfo, "deviceId">): Promise<string> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/devices/init`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(deviceInfo),
+    });
+
+    if (!response.ok) {
+      throw new Error("[Highlight Extension] Failed to initialize device ID");
+    }
+
+    const data: { deviceId: string } = await response.json();
+    const deviceId = data.deviceId;
+
+    if (typeof deviceId !== "string" || deviceId.length === 0) {
+      throw new Error("Invalid deviceId received from server");
+    }
+
+    return deviceId;
+  } catch (error) {
+    console.error("[Highlight Extension] Error initializing device ID:", error);
+    return "";
   }
 }

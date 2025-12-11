@@ -62,3 +62,13 @@ export interface ActivationState {
   isActivated: boolean;
   user?: User;
 }
+
+export interface DeviceInfo {
+  deviceId: string;
+  browser: string;
+  browserVersion: string;
+  os: string;
+  osVersion: string;
+  platform: string;
+  engine: string;
+}
