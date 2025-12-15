@@ -17,6 +17,8 @@
     import SyncingView from "./views/SyncingView.svelte";
     import DashBoardView from "./views/DashBoardView.svelte";
     import Theme from "$lib/components/Theme.svelte";
+    import { Toaster } from "$lib/components/ui/sonner/index.js";
+    import { toast } from "svelte-sonner";
     import * as Tooltip from "$lib/components/ui/tooltip/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 
@@ -30,22 +32,25 @@
     let unsyncedCount = $derived($wordsStore.filter((w) => !w.synced).length);
 
     const triggerSync = () => {
-        currentView = loggedIn ? "syncing" : "login";
+        currentView = loggedIn ? "syncing" : "login"; //983
     };
+
+    async function copyLink() {
+        try {
+            await navigator.clipboard.writeText(
+                "https://highlight.io/download?src=ext",
+            );
+            toast.success("Link Copied!");
+        } catch (e) {
+            console.error("Clipboard permission denied", e);
+            toast.error("Failed to copy link.");
+            return;
+        }
+    }
 
     onMount(async () => {
         await authStore.init();
         await wordsStore.loadWords();
-
-        // if ($authStore.isAuthenticated) {
-        //     if ($authStore.hasCompletedOnboarding) {
-        //         currentView = "syncing";
-        //     } else {
-        //         currentView = "onboarding";
-        //     }
-        // } else {
-        //     currentView = "login";
-        // }
 
         isLoading = false;
     });
@@ -81,7 +86,7 @@
         </div>
     {:else}
         <div class="flex items-center justify-between py-4 px-1 gap-x-5">
-            <div class="bg-card h-24 shadow-lg curve flex-1"></div>
+            <div class="h-24 flex-1"></div>
             <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
                     {#snippet child({ props })}
@@ -277,10 +282,4 @@
         </div>
     </div>
 </div>
-
-<style>
-    .curve {
-        clip-path: path("M0,0 H100% V60 Q50% 100% 0 60 Z");
-        border-bottom-right-radius: 1rem;
-    }
-</style>
+<Toaster richColors position="top-center" duration={5000} />

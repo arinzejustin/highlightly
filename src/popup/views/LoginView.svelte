@@ -1,6 +1,7 @@
 <script lang="ts">
     import { authStore } from "$lib/stores/auth";
     import { loginUser } from "$lib/utils/api";
+    import { toast } from "svelte-sonner";
     import Captcha from "../security/Captcha.svelte";
     import type { User } from "$lib/types";
 
@@ -35,10 +36,10 @@
             if (result) {
                 securityCheck = true;
             } else {
-                error = "Invalid credentials";
+                toast.error("Invalid credentials");
             }
         } catch (err) {
-            error = "Login failed. Please try again.";
+            toast.error("Login failed. Please try again.");
         } finally {
             isLoading = false;
         }
@@ -51,7 +52,7 @@
 
     async function handleSuccessCaptcha() {
         if (!result) {
-            error = "Login data missing. Please try again.";
+            toast.error("Login data missing. Please try again.");
             securityCheck = false;
             return;
         }

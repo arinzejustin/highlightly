@@ -53,7 +53,7 @@ function createRecordsStore() {
                 : DEFAULT_RECORDS;
 
         set(records);
-        await persist(records);
+        persist(records);
     }
 
     function updateRecords(fn: (records: Records) => Records) {

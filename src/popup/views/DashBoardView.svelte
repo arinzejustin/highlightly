@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { ListFilterPlus, OctagonAlert, Info } from "@lucide/svelte";
     import { activationStore } from "$lib/stores/activation";
+    import { recordsStore } from "$lib/stores/records";
     import * as Tooltip from "$lib/components/ui/tooltip/index.js";
     import type { User } from "$lib/types";
 
@@ -21,16 +22,12 @@
         openList?: () => void;
     }>();
     let hostname = $state(null) as string | null;
-    let totalRequests = $state(1247);
-    let successfulRequests = $state(1189);
-    let failedRequests = $state(58);
+    let totalRequests = $derived($recordsStore.requestCount);
+    let successfulRequests = $derived($recordsStore.successfulRequestCount);
+    let failedRequests = $derived($recordsStore.failedRequestCount);
 
-    let successRate = $derived(
-        ((successfulRequests / totalRequests) * 100).toFixed(1),
-    );
-    let failureRate = $derived(
-        ((failedRequests / totalRequests) * 100).toFixed(1),
-    );
+    let successRate = $derived((successfulRequests / totalRequests) * 100);
+    let failureRate = $derived((failedRequests / totalRequests) * 100);
 
     let isActivated = $derived($activationStore.isActivated);
 
@@ -327,7 +324,9 @@
                                 <span
                                     class="text-xs shadow-sm font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-full"
                                 >
-                                    {successRate}%
+                                    {isNaN(successRate)
+                                        ? "0"
+                                        : `${successRate.toFixed(1)}`}%
                                 </span>
                             </div>
                             <div>
@@ -341,7 +340,6 @@
                         </div>
                     </div>
 
-                    <!-- Failed Requests -->
                     <div
                         class="border rounded-lg min-h-24 p-4 card cursor-pointer hover:shadow-md transition-all duration-700"
                     >
@@ -365,7 +363,9 @@
                                 <span
                                     class="text-xs shadow-sm font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-full"
                                 >
-                                    {failureRate}%
+                                    {isNaN(failureRate)
+                                        ? "0"
+                                        : `${failureRate.toFixed(1)}`}%
                                 </span>
                             </div>
                             <div>
