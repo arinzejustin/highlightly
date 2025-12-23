@@ -163,7 +163,7 @@ async function registerDeviceIfNeeded(): Promise<void> {
     return;
   }
 
-  const deviceInfo: Omit<DeviceInfo, "deviceId"> = getDeviceInfo();
+  const deviceInfo: Omit<DeviceInfo, "deviceId"> = await getDeviceInfo();
 
   try {
     const deviceId = await InitDeviceId(deviceInfo);
@@ -250,13 +250,14 @@ async function checkUserStatus(): Promise<void> {
       STORAGE_KEYS.AUTH_TOKEN,
       STORAGE_KEYS.USER_ID,
       STORAGE_KEYS.USER,
+      STORAGE_KEYS.DEVICE_ID
     ]);
 
-    if (!authData.authToken || !authData.userId) {
+    if (!authData.authToken || !authData.userId || !authData.deviceId) {
       return;
     }
 
-    const freshUser = await getUserById(authData.userId, authData.authToken);
+    const freshUser = await getUserById(authData.userId, authData.authToken, authData.deviceId);
 
     if (!isValidUserData(freshUser)) {
       console.error("[Highlight] Invalid user data received");
@@ -315,9 +316,10 @@ async function syncUserToBackend(): Promise<boolean> {
       STORAGE_KEYS.AUTH_TOKEN,
       STORAGE_KEYS.USER,
       STORAGE_KEYS.DEVICE_ID,
+      STORAGE_KEYS.USER_ID,
     ]);
 
-    if (!authData.deviceId) {
+    if (!authData.userId) {
       return false;
     }
 
@@ -396,7 +398,26 @@ function scheduleTasks(): void {
   }, 8000);
 }
 
-chrome.runtime.onInstalled.addListener((details) => {
+async function checkUUIDExistsOrGenerateOne(): Promise<void> {
+  try {
+    const existUUID = await getChromeStorage<{ uuid?: string }>(
+      ['deviceUUID']
+    )
+
+    if (!existUUID || typeof existUUID.uuid !== 'string') {
+      const uuid = crypto.randomUUID();
+      await setChromeStorage({
+        ['deviceUUID']: uuid
+      })
+    }
+  } catch {
+    console.log('[Highlight Extension]: Installation error')
+  }
+}
+
+chrome.runtime.onInstalled.addListener(async (details) => {
+  await checkUUIDExistsOrGenerateOne();
+  console.log(details)
   registerDeviceIfNeeded().catch((error) => {
     console.error("[Highlight] Device registration failed:", error);
   });

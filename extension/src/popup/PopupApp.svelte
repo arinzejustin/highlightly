@@ -21,12 +21,10 @@
     import { toast } from "svelte-sonner";
     import * as Tooltip from "$lib/components/ui/tooltip/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+    import Overlay from "../content/Overlay.svelte";
 
-    let currentView:
-        | "login"
-        | "onboarding"
-        | "syncing"
-        | "dashboard" = $state("onboarding");
+    let currentView: "login" | "onboarding" | "syncing" | "dashboard" =
+        $state("dashboard");
     let isLoading = $state(false);
     let showAccount = $state(false);
     let allowList = $state(false);
@@ -120,7 +118,10 @@
                         <span>Account</span>
                     </DropdownMenu.Item>
                     <DropdownMenu.Item>
-                        <a href="https://highlight." target="_blank">Support</a>
+                        <a
+                            href="https://highlightwords.pro/support"
+                            target="_blank">Support</a
+                        >
                     </DropdownMenu.Item>
                     <DropdownMenu.Item
                         class="cursor-pointer"

@@ -82,6 +82,7 @@ export interface DeviceInfo {
   osVersion: string;
   platform: string;
   engine: string;
+  device_uuid: string;
 }
 
 export type WordResponse = {

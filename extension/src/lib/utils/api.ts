@@ -113,11 +113,13 @@ export async function fetchUserWords(token: string): Promise<SavedWord[]> {
   }
 }
 
-export async function getUserById(userId: string, token: string): Promise<User | null> {
+export async function getUserById(userId: string, token: string, deviceId: string): Promise<User | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...(deviceId && { "Device-ID": deviceId }),
       },
     });
 
@@ -206,6 +208,7 @@ export async function InitDeviceId(deviceInfo: Omit<DeviceInfo, "deviceId">): Pr
     }
 
     const data: { deviceId: string } = await response.json();
+    console.log(data)
     const deviceId = data.deviceId;
 
     if (typeof deviceId !== "string" || deviceId.length === 0) {

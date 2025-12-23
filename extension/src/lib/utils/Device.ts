@@ -2,7 +2,9 @@ import Bowser from "bowser";
 import { getChromeStorage, setChromeStorage } from "./chromeWrap";
 import type { DeviceInfo } from "$lib/types";
 
-export function getDeviceInfo(): Omit<DeviceInfo, "deviceId"> {
+export async function getDeviceInfo(): Promise<Omit<DeviceInfo, "deviceId">> {
+    const uuid = await getDevicUUID();
+
     const userAgent = typeof window !== "undefined"
         ? window.navigator.userAgent
         : navigator.userAgent;
@@ -16,6 +18,7 @@ export function getDeviceInfo(): Omit<DeviceInfo, "deviceId"> {
         osVersion: parser.getOSVersion() || "",
         platform: parser.getPlatformType(),
         engine: parser.getEngineName(),
+        device_uuid: uuid || ''
     };
 }
 
@@ -38,5 +41,17 @@ export async function setDeviceId(deviceId: string) {
         });
     } catch {
         setTimeout(() => setDeviceId(deviceId), 4000)
+    }
+}
+
+async function getDevicUUID() {
+    try {
+        const device = await getChromeStorage<{ uuid?: string }>(
+            ['deviceUUID']
+        )
+
+        return device.uuid
+    } catch {
+        return undefined;
     }
 }

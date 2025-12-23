@@ -126,8 +126,16 @@ function hideOverlay() {
   }
 }
 
+function isRestrictedPage(): boolean {
+  const { hostname, protocol } = window.location;
+  const restrictedProtocols = ["chrome:", "chrome-extension:", "brave:", "about:", "moz-extension:", "safari-extension:", "edge:", "file:", "data:"];
+  const restrictedHostnames = ["localhost", "127.0.0.1", "[::1]", "0.0.0.0"];
+
+  return restrictedProtocols.includes(protocol) || restrictedHostnames.includes(hostname) || (hostname === "" && (protocol === "chrome:" || protocol === "about:"));
+}
+
 function handleTextSelection() {
-  if (user?.extensionMode === false) {
+  if (isRestrictedPage() || user?.extensionMode === false) {
     hideOverlay();
     return;
   }

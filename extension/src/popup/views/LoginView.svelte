@@ -57,7 +57,11 @@
             return;
         }
 
-        const loginSuccess = await authStore.login(result);
+        const loginSuccess = await authStore.login(
+            result.token,
+            result.userId,
+            result.user,
+        );
         if (loginSuccess) {
             onLoginSuccess();
         } else {
@@ -136,7 +140,7 @@
             </form>
             <p class="text-xs text-center text-muted-foreground">
                 Don't have an account? <a
-                    href="https://highlighter.com/signup"
+                    href="https://highlightwords.pro/signup"
                     target="_blank"
                     class="text-primary hover:underline">Sign up</a
                 >

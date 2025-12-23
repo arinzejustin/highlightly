@@ -28,6 +28,7 @@
   let isSaving = $state(false);
   let saved = $state(false);
   let showExamples = $state(false);
+  let errorBookMark = $state<string | null>(null);
 
   const authToken = $derived($authStore.authToken);
 
@@ -77,6 +78,8 @@
   async function handleSave() {
     if (!meaning || isSaving || saved) return;
 
+    let timeOut: ReturnType<typeof setTimeout> | null = null;
+
     isSaving = true;
     try {
       await addWord({
@@ -89,9 +92,13 @@
       saved = true;
       closeTimeoutId = setTimeout(onClose, 1200);
     } catch {
-      error = "Failed to save word";
+      errorBookMark = "Failed to save word";
     } finally {
       isSaving = false;
+      if (timeOut) clearTimeout(timeOut);
+      timeOut = setTimeout(() => {
+        errorBookMark = null;
+      }, 2000);
     }
   }
 
@@ -105,7 +112,7 @@
 
 <div
   class="overlay-popup"
-  style="left:{x}px; top:{y}px"
+  style="left:{x}px; top:{y}px; overflow-y: auto;"
   class:hidden={!isVisible}
 >
   <div class="overlay-content">
@@ -124,13 +131,25 @@
 
     {#if isLoading}
       <div class="overlay-loading">
-        <Loader class="spinner" style="margin-right: 4px;" />
-        <span class="">Loading.....…</span>
+        <Loader class="spinner svelte-1nbeieh" style="margin-right: 4px;" />
+        <span class=""
+          >Looking up for <b
+            ><p
+              style="text-transform: uppercase; font-weight: 700; padding: 0 1px; display: inline-flex; color:var(--highlight-extension-highlighted)"
+            >
+              {word}
+            </p></b
+          > meaning</span
+        >
       </div>
     {:else if error}
       <div class="overlay-error">{error}</div>
     {:else}
       <div class="overlay-meaning">{meaning}</div>
+
+      {#if errorBookMark}
+        <div class="overlay-error errorBookmark">{errorBookMark}</div>
+      {/if}
 
       {#if examples.length > 0}
         <button
@@ -151,7 +170,7 @@
       {/if}
 
       <div class="overlay-actions">
-        {#if audioUrl}
+        {#if audioUrl && audioUrl !== "free_user"}
           <button
             class="overlay-action-btn audio-btn"
             onclick={playAudio}
@@ -161,7 +180,14 @@
             <Volume2 />
           </button>
         {:else}
-          <div></div>
+          <button
+            class="overlay-action-btn audio-btn"
+            disabled
+            aria-label="Subscribe to play pronunciation"
+            title="Subscribe to play pronunciation"
+          >
+            <Volume2 />
+          </button>
         {/if}
 
         <button
@@ -172,7 +198,7 @@
           aria-label={saved ? "Saved" : "Save word"}
         >
           {#if isSaving}
-            <Loader class="spinner" />
+            <Loader class="spinner svelte-1nbeieh" />
           {:else}
             <Bookmark class={saved ? "filled" : ""} />
           {/if}
@@ -182,10 +208,12 @@
     <div class="arrow {placement}" style="left: {arrowX}%"></div>
   </div>
 </div>
+<p style="display: none" class="spinner">hidden</p>
 
 <style>
   :root {
     --highlight-extension-radius: 12px;
+    --highlight-extension-highlighted: rgb(0, 206, 206);
     --highlight-extension-card: oklch(1 0 0 / 96%);
     --highlight-extension-border: oklch(0.922 0 0);
     --highlight-extension-hover: oklch(0.97 0 0);
@@ -313,10 +341,10 @@
   }
 
   .spinner {
-    width: 14px;
-    height: 14px;
+    width: 25px;
+    height: 25px;
     color: var(--highlight-extension-foreground);
-    animation: highlightExtensionSpin 0.5s linear infinite;
+    animation: highlightExtensionSpin 0.8s linear infinite;
     will-change: transform;
   }
 
@@ -333,6 +361,11 @@
     color: var(--highlight-extension-error);
     font-size: 14px;
     padding: 12px 0;
+  }
+
+  .errorBookmark {
+    text-align: center;
+    padding-top: 6px;
   }
 
   .overlay-meaning {
@@ -411,11 +444,11 @@
 
   .overlay-action-btn {
     padding: 10px;
-    border-radius: 8px;
-    border: none;
+    border-radius: 10px;
+    border: 1px solid var(--highlight-extension-border);
     cursor: pointer;
     background: transparent;
-    color: var(--highlight-extension-muted);
+    color: var(--highlight-extension-primary);
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
@@ -429,6 +462,12 @@
 
   .audio-btn:hover:not(:disabled) {
     color: var(--highlight-extension-primary);
+  }
+
+  .audio-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    color: var(--highlight-extension-error);
   }
 
   .bookmark-btn:disabled {
