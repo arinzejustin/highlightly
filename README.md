@@ -133,4 +133,4 @@ Planned enhancements include:
 - Contextual phrase detection  
 - Cloud sync across devices  
 - Spaced repetition learning mode  
-- Export vocabulary (CSV / JSON)  
+- Export vocabulary (CSV, Image, PDF, Excel Sheet)  
