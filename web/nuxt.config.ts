@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt', "@nuxt/fonts"],
+  modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt'],
   shadcn: {
     /**
      * Prefix for all the imported component.
