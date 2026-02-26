@@ -10,7 +10,7 @@
                             class="absolute inset-0 bg-brand-500/20 rounded-xl blur-md group-hover:bg-brand-500/30 transition-all duration-500">
                         </div>
                         <div
-                            class="relative w-8 h-8 bg-linear-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center shadow-md shadow-brand-500/20">
+                            class="relative w-8 h-8 bg-brand-600 rounded-xl flex items-center justify-center shadow-sm">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-white">
                                 <path d="M9 11L12 2L15 11H9Z" fill="currentColor" opacity="0.7" />
                                 <path d="M5 13H19L18 17H6L5 13Z" fill="currentColor" />
@@ -75,7 +75,7 @@
                         @click="mobileOpen = false">
                         {{ link.label }}
                     </a>
-                    <NuxtLink to="/login"
+                    <NuxtLink to="/auth/login"
                         class="px-4 py-3 text-sm font-medium text-surface-600 hover:text-surface-900 rounded-lg hover:bg-surface-100 transition-all"
                         @click="mobileOpen = false">
                         Log in

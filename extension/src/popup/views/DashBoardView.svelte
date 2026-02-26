@@ -213,13 +213,13 @@
                             if (!hostname || !user || user.plan === "free")
                                 return;
                             if (
-                                user.disallowedList.includes(hostname) &&
+                                (user.disallowedList || []).includes(hostname) &&
                                 disallowedStore.list().includes(hostname)
                             )
                                 return;
 
                             const updatedList = [
-                                ...user.disallowedList,
+                                ...(user.disallowedList || []),
                                 hostname,
                             ];
                             user = {
@@ -238,7 +238,7 @@
                 <p class="text-primary-forground text-lg my-4">
                     Disallowed Sites
                 </p>
-                {#if user && user.disallowedList.length > 0}
+                {#if user && (user.disallowedList || []).length > 0}
                     <div class="space-y-2 my-2 max-h-60 overflow-y-auto pr-2">
                         {#each user.disallowedList as site}
                             <div

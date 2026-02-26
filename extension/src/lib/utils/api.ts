@@ -10,7 +10,7 @@ export async function fetchMeaning(word: string, authToken: string | null, devic
       headers: {
         "Content-Type": "application/json",
         ...(authToken && { Authorization: `Bearer ${authToken}` }),
-        ...(deviceId && { "Device-ID": deviceId }),
+        ...(deviceId && { "x-device-id": deviceId }),
 
       },
       body: JSON.stringify({ word }),
@@ -119,7 +119,7 @@ export async function getUserById(userId: string, token: string, deviceId: strin
       headers: {
         "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
-        ...(deviceId && { "Device-ID": deviceId }),
+        ...(deviceId && { "x-device-id": deviceId }),
       },
     });
 
@@ -150,7 +150,7 @@ export async function syncUser(
         headers: {
           "Content-Type": "application/json",
           ...(authData.authToken && { Authorization: `Bearer ${authData.authToken}` }),
-          ...(authData.deviceId && { "Device-ID": authData.deviceId }),
+          ...(authData.deviceId && { "x-device-id": authData.deviceId }),
 
         },
         body: JSON.stringify(authData.user),
@@ -207,9 +207,9 @@ export async function InitDeviceId(deviceInfo: Omit<DeviceInfo, "deviceId">): Pr
       throw new Error("[Highlight Extension] Failed to initialize device ID");
     }
 
-    const data: { deviceId: string } = await response.json();
-    console.log(data)
-    const deviceId = data.deviceId;
+    const responseData: { data: { deviceId: string }, status: boolean } = await response.json();
+    console.log(responseData)
+    const deviceId = responseData.data?.deviceId;
 
     if (typeof deviceId !== "string" || deviceId.length === 0) {
       throw new Error("Invalid deviceId received from server");

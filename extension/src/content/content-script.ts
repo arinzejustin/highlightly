@@ -30,7 +30,10 @@ chrome.runtime.onMessage.addListener((message) => {
     handleTextSelection();
   }
 
-  if (message.type === "Extension deactivated" || message.type === "Extension activated") {
+  if (
+    message.type === "EXTENSION_DEACTIVATED" ||
+    message.type === "EXTENSION_ACTIVATED"
+  ) {
     if (user) {
       user.extensionMode = message.isActivated;
     }
@@ -128,10 +131,24 @@ function hideOverlay() {
 
 function isRestrictedPage(): boolean {
   const { hostname, protocol } = window.location;
-  const restrictedProtocols = ["chrome:", "chrome-extension:", "brave:", "about:", "moz-extension:", "safari-extension:", "edge:", "file:", "data:"];
+  const restrictedProtocols = [
+    "chrome:",
+    "chrome-extension:",
+    "brave:",
+    "about:",
+    "moz-extension:",
+    "safari-extension:",
+    "edge:",
+    "file:",
+    "data:",
+  ];
   const restrictedHostnames = ["localhost", "127.0.0.1", "[::1]", "0.0.0.0"];
 
-  return restrictedProtocols.includes(protocol) || restrictedHostnames.includes(hostname) || (hostname === "" && (protocol === "chrome:" || protocol === "about:"));
+  return (
+    restrictedProtocols.includes(protocol) ||
+    restrictedHostnames.includes(hostname) ||
+    (hostname === "" && (protocol === "chrome:" || protocol === "about:"))
+  );
 }
 
 function handleTextSelection() {
@@ -142,8 +159,9 @@ function handleTextSelection() {
 
   if (user?.disallowedList?.length) {
     const hostname = window.location.hostname;
-    const isDisallowed = user.disallowedList.some((domain: string) =>
-      hostname === domain || hostname.endsWith(`.${domain}`)
+    const isDisallowed = user.disallowedList.some(
+      (domain: string) =>
+        hostname === domain || hostname.endsWith(`.${domain}`),
     );
     if (isDisallowed) {
       hideOverlay();
@@ -228,34 +246,42 @@ document.addEventListener("mousedown", (e) => {
   }
 });
 
-window.addEventListener("scroll", () => {
-  if (!overlayComponent || !selectedText || !selectionRect) return;
+window.addEventListener(
+  "scroll",
+  () => {
+    if (!overlayComponent || !selectedText || !selectionRect) return;
 
-  if (scrollTimeout) return;
+    if (scrollTimeout) return;
 
-  scrollTimeout = window.setTimeout(() => {
-    scrollTimeout = null;
+    scrollTimeout = window.setTimeout(() => {
+      scrollTimeout = null;
 
-    const selection = window.getSelection();
-    if (selection && !selection.isCollapsed && selection.toString().trim() === selectedText) {
-      const range = selection.getRangeAt(0);
-      const newRect = range.getBoundingClientRect();
+      const selection = window.getSelection();
+      if (
+        selection &&
+        !selection.isCollapsed &&
+        selection.toString().trim() === selectedText
+      ) {
+        const range = selection.getRangeAt(0);
+        const newRect = range.getBoundingClientRect();
 
-      const visible = isElementInViewport(newRect);
+        const visible = isElementInViewport(newRect);
 
-      const pos = calculateOverlayPosition(newRect);
+        const pos = calculateOverlayPosition(newRect);
 
-      overlayComponent!.x = pos.x;
-      overlayComponent!.y = pos.y;
-      overlayComponent!.isVisible = visible;
-      overlayComponent!.placement = pos.side;
-      overlayComponent!.arrowX = pos.arrowX;
-      selectionRect = newRect;
-    } else {
-      hideOverlay();
-    }
-  }, 10);
-}, { passive: true });
+        overlayComponent!.x = pos.x;
+        overlayComponent!.y = pos.y;
+        overlayComponent!.isVisible = visible;
+        overlayComponent!.placement = pos.side;
+        overlayComponent!.arrowX = pos.arrowX;
+        selectionRect = newRect;
+      } else {
+        hideOverlay();
+      }
+    }, 10);
+  },
+  { passive: true },
+);
 
 window.addEventListener("beforeunload", () => {
   hideOverlay();

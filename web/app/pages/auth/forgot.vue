@@ -5,8 +5,7 @@
             <div class="w-full max-w-sm">
                 <!-- Logo -->
                 <NuxtLink to="/" class="flex items-center gap-2.5 mb-10 group">
-                    <div
-                        class="w-8 h-8 bg-linear-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center shadow-md shadow-brand-500/20">
+                    <div class="w-8 h-8 bg-brand-600 rounded-xl flex items-center justify-center shadow-sm">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-white">
                             <path d="M9 11L12 2L15 11H9Z" fill="currentColor" opacity="0.7" />
                             <path d="M5 13H19L18 17H6L5 13Z" fill="currentColor" />
@@ -19,14 +18,25 @@
                 </NuxtLink>
 
                 <!-- Back Link -->
-                <NuxtLink to="/login"
-                    class="inline-flex items-center gap-1.5 text-sm text-surface-500 hover:text-surface-700 transition-colors mb-8"
-                    id="forgot-back-link">
+                <NuxtLink to="/auth/login"
+                    class="inline-flex items-center gap-1.5 text-sm text-surface-500 hover:text-surface-700 transition-colors mb-8">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="15 18 9 12 15 6" />
                     </svg>
                     Back to login
                 </NuxtLink>
+
+                <!-- Error Message -->
+                <div v-if="authError"
+                    class="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700 flex items-start gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        class="shrink-0 mt-0.5">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                    {{ authError }}
+                </div>
 
                 <!-- Not Submitted State -->
                 <template v-if="!submitted">
@@ -81,7 +91,7 @@
                             <button @click="handleSubmit" class="text-brand-600 hover:underline font-medium">try
                                 again</button>.
                         </p>
-                        <NuxtLink to="/login" id="forgot-back-login"
+                        <NuxtLink to="/auth/login"
                             class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-surface-900 rounded-xl hover:bg-surface-800 transition-all shadow-sm">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
@@ -97,26 +107,20 @@
         <!-- Right — Decorative Panel -->
         <div class="hidden lg:flex flex-1 items-center justify-center bg-surface-50 relative overflow-hidden">
             <div class="absolute inset-0 opacity-[0.3]"
-                style="background-image: radial-linear(circle, #d4d4d4 1px, transparent 1px); background-size: 24px 24px;">
-            </div>
-            <div class="absolute top-1/3 right-1/4 w-[250px] h-[250px] bg-amber-200/20 rounded-full blur-[70px]"></div>
-            <div class="absolute bottom-1/3 left-1/3 w-[300px] h-[300px] bg-brand-100/30 rounded-full blur-[80px]">
+                style="background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px); background-size: 24px 24px;">
             </div>
 
             <div class="relative text-center max-w-sm px-8">
                 <div
                     class="w-48 h-48 mx-auto mb-8 bg-white rounded-3xl border border-surface-200 shadow-lg shadow-surface-900/5 flex items-center justify-center">
                     <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
-                        <!-- Lock -->
                         <rect x="30" y="45" width="40" height="32" rx="6" fill="#fafafa" stroke="#d4d4d4"
                             stroke-width="2" />
                         <path d="M38 45 V35 a12 12 0 0 1 24 0 v10" fill="none" stroke="#d4d4d4" stroke-width="2.5"
                             stroke-linecap="round" />
-                        <!-- Keyhole -->
                         <circle cx="50" cy="58" r="5" fill="#04c8ac" opacity="0.3" stroke="#04c8ac"
                             stroke-width="1.5" />
                         <rect x="48" y="61" width="4" height="8" rx="2" fill="#04c8ac" opacity="0.3" />
-                        <!-- Sparkle -->
                         <path d="M72 28 L74 32 L78 34 L74 36 L72 40 L70 36 L66 34 L70 32 Z" fill="#fbbf24"
                             opacity="0.5" />
                         <path d="M28 22 L29 25 L32 26 L29 27 L28 30 L27 27 L24 26 L27 25 Z" fill="#04c8ac"
@@ -136,22 +140,23 @@
 definePageMeta({ layout: false })
 
 useHead({
-    title: 'Reset Password — Highlightly',
+    title: 'Reset Password | Highlightly',
     meta: [
         { name: 'description', content: 'Reset your Highlightly account password. We\'ll send you a secure link to create a new password.' },
         { name: 'robots', content: 'noindex, nofollow' },
     ],
 })
 
+const { forgotPassword, isLoading, error: authError } = useAuth()
+
 const email = ref('')
-const isLoading = ref(false)
 const submitted = ref(false)
 
-function handleSubmit() {
-    isLoading.value = true
-    setTimeout(() => {
-        isLoading.value = false
+async function handleSubmit() {
+    submitted.value = false
+    const success = await forgotPassword(email.value)
+    if (success) {
         submitted.value = true
-    }, 1200)
+    }
 }
 </script>

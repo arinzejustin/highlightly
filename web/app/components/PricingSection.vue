@@ -50,7 +50,7 @@
                     class="relative p-7 rounded-2xl border border-brand-200 bg-brand-50/30 shadow-lg shadow-brand-500/5 hover:shadow-brand-500/10 transition-all duration-300">
                     <div class="absolute -top-3 left-1/2 -translate-x-1/2">
                         <span
-                            class="px-4 py-1.5 text-xs font-semibold text-white bg-linear-to-r from-brand-500 to-brand-600 rounded-full shadow-md shadow-brand-500/20">Most
+                            class="px-4 py-1.5 text-xs font-semibold text-white bg-brand-600 rounded-full shadow-sm">Most
                             Popular</span>
                     </div>
                     <div class="mb-5">

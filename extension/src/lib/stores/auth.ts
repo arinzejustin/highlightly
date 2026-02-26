@@ -7,6 +7,7 @@ import {
   Notification,
 } from "$lib/utils/chromeWrap";
 import { getUserById } from "$lib/utils/api";
+import { retriveId } from "$lib/utils/Device";
 import type { User, LogoutReason, AuthState } from "$lib/types";
 
 const STORAGE_KEYS = {
@@ -93,6 +94,7 @@ function createAuthStore() {
         }>(Object.values(STORAGE_KEYS));
 
         const hasOnboarded = data.hasCompletedOnboarding ?? false;
+        const deviceId = await retriveId() || '';
 
         if (!data.authToken || !data.userId) {
           set({ ...createInitialState(), hasCompletedOnboarding: hasOnboarded, user: data.user || null });
@@ -100,7 +102,7 @@ function createAuthStore() {
         }
 
         try {
-          const freshUser = await getUserById(data.userId, data.authToken);
+          const freshUser = await getUserById(data.userId, data.authToken, deviceId);
           if (isValidUser(freshUser)) {
             const newState = {
               isAuthenticated: true,

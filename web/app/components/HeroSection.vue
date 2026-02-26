@@ -9,17 +9,15 @@
       <div class="absolute inset-0 opacity-[0.35]"
         style="background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px); background-size: 32px 32px;">
       </div>
-      <!-- Top-right accent gradient -->
-      <div
-        class="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-linear-to-br from-brand-200/40 to-brand-100/20 blur-3xl">
+      <!-- Top-right accent -->
+      <div class="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-brand-100/20 blur-3xl">
       </div>
-      <!-- Bottom-left accent gradient -->
-      <div
-        class="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full bg-linear-to-tr from-brand-100/30 to-transparent blur-3xl">
+      <!-- Bottom-left accent -->
+      <div class="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full bg-brand-50/30 blur-3xl">
       </div>
       <!-- Center gentle wash -->
       <div
-        class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-brand-100/20 blur-[100px]">
+        class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-brand-50/15 blur-[100px]">
       </div>
     </div>
 
@@ -46,7 +44,8 @@
       </div>
 
       <!-- Headline -->
-      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-surface-900 animate-fade-in-up"
+      <h1
+        class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-surface-900 animate-fade-in-up"
         style="animation-delay: 0.2s">
         Understand any word,
         <br />

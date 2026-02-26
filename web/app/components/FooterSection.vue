@@ -4,25 +4,30 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
         <div class="md:col-span-1">
           <NuxtLink to="/" class="flex items-center gap-2.5 mb-3">
-            <div class="w-7 h-7 bg-linear-to-br from-brand-500 to-brand-700 rounded-lg flex items-center justify-center">
+            <div class="w-7 h-7 bg-brand-600 rounded-lg flex items-center justify-center">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="text-white">
                 <path d="M9 11L12 2L15 11H9Z" fill="currentColor" opacity="0.7" />
                 <path d="M5 13H19L18 17H6L5 13Z" fill="currentColor" />
                 <path d="M7 19H17L16.5 21H7.5L7 19Z" fill="currentColor" opacity="0.8" />
               </svg>
             </div>
-            <span class="text-base font-bold"><span class="text-surface-900">Highlight</span><span class="text-brand-600">ly</span></span>
+            <span class="text-base font-bold"><span class="text-surface-900">Highlight</span><span
+                class="text-brand-600">ly</span></span>
           </NuxtLink>
-          <p class="text-sm text-surface-400 leading-relaxed mb-5">A fast, privacy-first browser extension for instant word definitions.</p>
+          <p class="text-sm text-surface-400 leading-relaxed mb-5">A fast, privacy-first browser extension for instant
+            word definitions.</p>
           <div class="flex items-center gap-2.5">
-            <a v-for="s in socials" :key="s.name" :href="s.href" target="_blank" :aria-label="s.name" class="w-8 h-8 rounded-lg border border-surface-100 flex items-center justify-center text-surface-400 hover:text-surface-700 hover:border-surface-300 hover:bg-surface-50 transition-all duration-200" v-html="s.icon" />
+            <a v-for="s in socials" :key="s.name" :href="s.href" target="_blank" :aria-label="s.name"
+              class="w-8 h-8 rounded-lg border border-surface-100 flex items-center justify-center text-surface-400 hover:text-surface-700 hover:border-surface-300 hover:bg-surface-50 transition-all duration-200"
+              v-html="s.icon" />
           </div>
         </div>
         <div v-for="group in footerLinks" :key="group.title">
           <h4 class="text-xs font-semibold text-surface-800 mb-3 tracking-wider uppercase">{{ group.title }}</h4>
           <ul class="space-y-2">
             <li v-for="link in group.links" :key="link.label">
-              <a :href="link.href" class="text-sm text-surface-400 hover:text-brand-600 transition-colors">{{ link.label }}</a>
+              <a :href="link.href"
+                class="text-sm text-surface-400 hover:text-brand-600 transition-colors">{{ link.label }}</a>
             </li>
           </ul>
         </div>

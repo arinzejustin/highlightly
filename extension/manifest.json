@@ -27,11 +27,7 @@
     }
   },
   "background": {
-    "service_worker": "src/background/service-worker.ts",
-    "persistent": true,
-    "scripts": [
-      "src/background/service-worker.ts"
-    ]
+    "service_worker": "src/background/service-worker.ts"
   },
   "content_scripts": [
     {
